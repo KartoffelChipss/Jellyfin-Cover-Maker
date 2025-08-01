@@ -1,0 +1,23 @@
+{
+  "name": "jellyfin-cover-maker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "basecoat-css": "^0.3.0",
+    "lucide-preact": "^0.536.0",
+    "preact": "^10.26.9",
+    "tailwindcss": "^4.1.11"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}
