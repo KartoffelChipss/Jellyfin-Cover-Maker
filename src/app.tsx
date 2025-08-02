@@ -2,14 +2,17 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import FileInput from "./components/FileInput";
 import { Download, ImageOff } from "lucide-preact";
 import GitHub from "./components/GitHub";
+import SliderInput from "./components/SliderInput";
 
 export default function App() {
+    const DEFAULT_TEXT_SIZE = 120;
+    const CANVAS_WIDTH = 960;
+    const CANVAS_HEIGHT = 540;
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [title, setTitle] = useState("Movies");
     const [image, setImage] = useState<HTMLImageElement | null>(null);
-
-    const CANVAS_WIDTH = 960;
-    const CANVAS_HEIGHT = 540;
+    const [textSize, setTextSize] = useState(DEFAULT_TEXT_SIZE);
 
     const handleImageUpload = (e: Event) => {
         const input = e.target as HTMLInputElement;
@@ -96,11 +99,11 @@ export default function App() {
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         document.fonts.ready.then(() => {
-            ctx.font = 'bold 120px "Montserrat", sans-serif';
+            ctx.font = `bold ${textSize}px "Montserrat", sans-serif`;
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            drawWrappedText(ctx, titleText, CANVAS_WIDTH * 0.9, 110);
+            drawWrappedText(ctx, titleText, CANVAS_WIDTH * 0.9, textSize * 1.2);
         });
     };
 
@@ -132,7 +135,7 @@ export default function App() {
         if (image && canvasRef.current) {
             drawCanvas(image, title);
         }
-    }, [image, title]);
+    }, [image, title, textSize]);
 
     useEffect(() => {
         const defaultImg = new Image();
@@ -181,6 +184,19 @@ export default function App() {
                         </span>
                         <FileInput onImageUpload={handleImageUpload} />
                     </div>
+
+                    <SliderInput
+                        value={textSize}
+                        min={10}
+                        max={250}
+                        onChange={(v) => setTextSize(v)}
+                        step={1}
+                        showPlusMinusButtons
+                        displayValue
+                        displayUnit="px"
+                        defaultValue={DEFAULT_TEXT_SIZE}
+                    />
+
                     <button
                         onClick={downloadImage}
                         className="btn font-bold w-full"
