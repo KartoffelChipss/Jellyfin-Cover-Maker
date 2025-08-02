@@ -1,20 +1,40 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import FileInput from "./components/FileInput";
 import { Download, ImageOff } from "lucide-preact";
-import GitHub from "./components/GitHub";
 import SliderInput from "./components/SliderInput";
+import Header from "./components/Header";
+import ImageTypeSelect from "./components/ImageTypeSelect";
 
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
     const DEFAULT_BG_DIM = 0.4;
-    const CANVAS_WIDTH = 960;
-    const CANVAS_HEIGHT = 540;
+
+    const camvasSizes: Record<
+        "cover" | "poster",
+        { width: number; height: number; defaultFontSize: number }
+    > = {
+        cover: {
+            width: 960,
+            height: 540,
+            defaultFontSize: 120,
+        },
+        poster: {
+            width: 333,
+            height: 500,
+            defaultFontSize: 50,
+        },
+    };
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [title, setTitle] = useState("Movies");
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [textSize, setTextSize] = useState(DEFAULT_TEXT_SIZE);
     const [bgDim, setBgDim] = useState(DEFAULT_BG_DIM);
+    const [imageType, setImageType] = useState<"cover" | "poster">("cover");
+
+    const getCanvasWidth = () => camvasSizes[imageType].width;
+    const getCanvasHeight = () => camvasSizes[imageType].height;
+    const getDefaultFontSize = () => camvasSizes[imageType].defaultFontSize;
 
     const handleImageUpload = (e: Event) => {
         const input = e.target as HTMLInputElement;
@@ -51,10 +71,10 @@ export default function App() {
         lines.push(currentLine);
 
         const totalHeight = lines.length * lineHeight;
-        let y = (CANVAS_HEIGHT - totalHeight) / 2 + lineHeight / 2;
+        let y = (getCanvasHeight() - totalHeight) / 2 + lineHeight / 2;
 
         for (const line of lines) {
-            ctx.fillText(line, CANVAS_WIDTH / 2, y);
+            ctx.fillText(line, getCanvasWidth() / 2, y);
             y += lineHeight;
         }
     };
@@ -65,47 +85,55 @@ export default function App() {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        canvas.width = CANVAS_WIDTH;
-        canvas.height = CANVAS_HEIGHT;
+        canvas.width = getCanvasWidth();
+        canvas.height = getCanvasHeight();
+
+        const canvasWidth = getCanvasWidth();
+        const canvasHeight = getCanvasHeight();
 
         const imgAspect = img.width / img.height;
-        const canvasAspect = CANVAS_WIDTH / CANVAS_HEIGHT;
+        const canvasAspect = canvasWidth / canvasHeight;
 
-        let sx = 0,
-            sy = 0,
-            sWidth = img.width,
-            sHeight = img.height;
+        let sourceX = 0;
+        let sourceY = 0;
+        let sourceWidth = img.width;
+        let sourceHeight = img.height;
 
         if (imgAspect > canvasAspect) {
-            sWidth = img.height * canvasAspect;
-            sx = (img.width - sWidth) / 2;
+            sourceWidth = img.height * canvasAspect;
+            sourceX = (img.width - sourceWidth) / 2;
         } else {
-            sHeight = img.width / canvasAspect;
-            sy = (img.height - sHeight) / 2;
+            sourceHeight = img.width / canvasAspect;
+            sourceY = (img.height - sourceHeight) / 2;
         }
 
         ctx.drawImage(
             img,
-            sx,
-            sy,
-            sWidth,
-            sHeight,
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight,
             0,
             0,
-            CANVAS_WIDTH,
-            CANVAS_HEIGHT
+            canvasWidth,
+            canvasHeight
         );
 
         // dim overlay
         ctx.fillStyle = `rgba(0, 0, 0, ${bgDim})`;
-        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
         document.fonts.ready.then(() => {
             ctx.font = `bold ${textSize}px "Montserrat", sans-serif`;
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            drawWrappedText(ctx, titleText, CANVAS_WIDTH * 0.9, textSize * 1.2);
+            drawWrappedText(
+                ctx,
+                titleText,
+                getCanvasWidth() * 0.9,
+                textSize * 1.2
+            );
         });
     };
 
@@ -137,7 +165,7 @@ export default function App() {
         if (image && canvasRef.current) {
             drawCanvas(image, title);
         }
-    }, [image, title, textSize, bgDim]);
+    }, [image, title, textSize, bgDim, imageType]);
 
     useEffect(() => {
         const defaultImg = new Image();
@@ -147,26 +175,16 @@ export default function App() {
         defaultImg.src = "/default-bg.jpg";
     }, []);
 
+    const handleImageTypeChange = (type: "cover" | "poster") => {
+        setImageType(type);
+        setTextSize(camvasSizes[type].defaultFontSize);
+    };
+
     return (
         <>
-            <div className="flex items-center justify-between w-full">
-                <h1 className="text-4xl font-bold my-8 w-full flex items-center gap-2">
-                    <img src={"/logo.svg"} alt={"Logo"} className="h-9" />
-                    Jellyfin Cover Maker
-                </h1>
-                <a
-                    href={
-                        "https://github.com/KartoffelChipss/Jellyfin-Cover-Maker"
-                    }
-                    target={"_blank"}
-                    rel={"noopener noreferrer"}
-                    className="h-6 w-6"
-                >
-                    <GitHub />
-                </a>
-            </div>
+            <Header />
             <div className="flex gap-5 w-full">
-                <div className="flex flex-col gap-5 w-1/2">
+                <div className="flex flex-col gap-5 w-1/3">
                     <label className="w-full">
                         <span className="text-sm text-muted-foreground">
                             Title:
@@ -187,20 +205,30 @@ export default function App() {
                         <FileInput onImageUpload={handleImageUpload} />
                     </div>
 
+                    <div className="flex flex-col grow">
+                        <span className="text-sm text-muted-foreground mb-1">
+                            Image Type:
+                        </span>
+                        <ImageTypeSelect
+                            value={imageType}
+                            onChange={(t) => handleImageTypeChange(t)}
+                        />
+                    </div>
+
                     <div className="flex flex-col">
                         <span className="text-sm text-muted-foreground mb-1">
                             Text Size:
                         </span>
                         <SliderInput
                             value={textSize}
-                            min={10}
+                            min={1}
                             max={250}
                             onChange={(v) => setTextSize(v)}
                             step={1}
                             showPlusMinusButtons
                             displayValue
                             displayUnit="px"
-                            defaultValue={DEFAULT_TEXT_SIZE}
+                            defaultValue={getDefaultFontSize()}
                         />
                     </div>
 
@@ -230,27 +258,24 @@ export default function App() {
                     </button>
                 </div>
 
-                {image ? (
+                <div
+                    className={
+                        "flex items-center justify-center grow " +
+                        (imageType === "poster" ? "flex-col" : "")
+                    }
+                >
                     <canvas
-                        className="rounded-md border border-input border-solid max-w-full aspect-16/9"
-                        ref={canvasRef}
-                        width={CANVAS_WIDTH}
-                        height={CANVAS_HEIGHT}
-                    />
-                ) : (
-                    <div
+                        className={
+                            "rounded-md border border-input border-solid grow"
+                        }
                         style={{
-                            width: `${CANVAS_WIDTH}px`,
-                            height: `${CANVAS_HEIGHT}px`,
+                            aspectRatio: `${getCanvasWidth()} / ${getCanvasHeight()}`,
                         }}
-                        className={`rounded-md border border-input border-solid max-w-full flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground aspect-16/9`}
-                    >
-                        <ImageOff />
-                        <span>
-                            You need to upload an image to see the preview.
-                        </span>
-                    </div>
-                )}
+                        ref={canvasRef}
+                        width={getCanvasWidth()}
+                        height={getCanvasHeight()}
+                    />
+                </div>
             </div>
         </>
     );
