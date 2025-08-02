@@ -23,6 +23,37 @@ export default function App() {
         img.src = URL.createObjectURL(file);
     };
 
+    const drawWrappedText = (
+        ctx: CanvasRenderingContext2D,
+        text: string,
+        maxWidth: number,
+        lineHeight: number
+    ) => {
+        const words = text.split(" ");
+        const lines: string[] = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+            const word = words[i];
+            const width = ctx.measureText(currentLine + " " + word).width;
+            if (width < maxWidth) {
+                currentLine += " " + word;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+        lines.push(currentLine);
+
+        const totalHeight = lines.length * lineHeight;
+        let y = (CANVAS_HEIGHT - totalHeight) / 2 + lineHeight / 2;
+
+        for (const line of lines) {
+            ctx.fillText(line, CANVAS_WIDTH / 2, y);
+            y += lineHeight;
+        }
+    };
+
     const drawCanvas = (img: HTMLImageElement, titleText: string) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -69,7 +100,7 @@ export default function App() {
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(titleText, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+            drawWrappedText(ctx, titleText, CANVAS_WIDTH * 0.9, 110);
         });
     };
 
