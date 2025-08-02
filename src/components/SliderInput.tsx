@@ -12,6 +12,7 @@ interface SliderInputProps {
     showPlusMinusButtons?: boolean;
     displayValue?: boolean;
     displayUnit?: string;
+    decimalPlaces?: number;
 }
 
 const SliderInput: FC<SliderInputProps> = ({
@@ -19,12 +20,13 @@ const SliderInput: FC<SliderInputProps> = ({
     min,
     max,
     step = 1,
-    buttonStep = 1,
+    buttonStep,
     onChange,
     defaultValue,
     showPlusMinusButtons = false,
     displayValue = false,
     displayUnit,
+    decimalPlaces = 0,
 }) => {
     const sliderRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +56,7 @@ const SliderInput: FC<SliderInputProps> = ({
                     onClick={() =>
                         onChange(Math.max(min, value - (buttonStep || step)))
                     }
+                    disabled={value <= min}
                 >
                     <Plus />
                 </button>
@@ -77,6 +80,7 @@ const SliderInput: FC<SliderInputProps> = ({
                     onClick={() =>
                         onChange(Math.min(max, value + (buttonStep || step)))
                     }
+                    disabled={value >= max}
                 >
                     <Plus />
                 </button>
@@ -92,7 +96,9 @@ const SliderInput: FC<SliderInputProps> = ({
                                   )
                                 : ""}
                         </span>
-                        {value}
+                        {decimalPlaces > 0
+                            ? value.toFixed(decimalPlaces)
+                            : value}
                         {displayUnit ?? ""}
                     </span>
                 </div>

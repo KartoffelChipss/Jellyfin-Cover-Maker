@@ -6,6 +6,7 @@ import SliderInput from "./components/SliderInput";
 
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
+    const DEFAULT_BG_DIM = 0.4;
     const CANVAS_WIDTH = 960;
     const CANVAS_HEIGHT = 540;
 
@@ -13,6 +14,7 @@ export default function App() {
     const [title, setTitle] = useState("Movies");
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [textSize, setTextSize] = useState(DEFAULT_TEXT_SIZE);
+    const [bgDim, setBgDim] = useState(DEFAULT_BG_DIM);
 
     const handleImageUpload = (e: Event) => {
         const input = e.target as HTMLInputElement;
@@ -95,7 +97,7 @@ export default function App() {
         );
 
         // dim overlay
-        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.fillStyle = `rgba(0, 0, 0, ${bgDim})`;
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         document.fonts.ready.then(() => {
@@ -135,7 +137,7 @@ export default function App() {
         if (image && canvasRef.current) {
             drawCanvas(image, title);
         }
-    }, [image, title, textSize]);
+    }, [image, title, textSize, bgDim]);
 
     useEffect(() => {
         const defaultImg = new Image();
@@ -185,17 +187,39 @@ export default function App() {
                         <FileInput onImageUpload={handleImageUpload} />
                     </div>
 
-                    <SliderInput
-                        value={textSize}
-                        min={10}
-                        max={250}
-                        onChange={(v) => setTextSize(v)}
-                        step={1}
-                        showPlusMinusButtons
-                        displayValue
-                        displayUnit="px"
-                        defaultValue={DEFAULT_TEXT_SIZE}
-                    />
+                    <div className="flex flex-col">
+                        <span className="text-sm text-muted-foreground mb-1">
+                            Text Size:
+                        </span>
+                        <SliderInput
+                            value={textSize}
+                            min={10}
+                            max={250}
+                            onChange={(v) => setTextSize(v)}
+                            step={1}
+                            showPlusMinusButtons
+                            displayValue
+                            displayUnit="px"
+                            defaultValue={DEFAULT_TEXT_SIZE}
+                        />
+                    </div>
+
+                    <div className="flex flex-col">
+                        <span className="text-sm text-muted-foreground mb-1">
+                            Background Dim:
+                        </span>
+                        <SliderInput
+                            value={bgDim}
+                            min={0}
+                            max={1}
+                            onChange={(v) => setBgDim(v)}
+                            step={0.01}
+                            showPlusMinusButtons
+                            displayValue
+                            decimalPlaces={2}
+                            defaultValue={DEFAULT_BG_DIM}
+                        />
+                    </div>
 
                     <button
                         onClick={downloadImage}
