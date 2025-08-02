@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
+    "@types/webfontloader": "^1.6.38",
     "basecoat-css": "^0.3.0",
     "lucide-preact": "^0.536.0",
     "preact": "^10.26.9",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",

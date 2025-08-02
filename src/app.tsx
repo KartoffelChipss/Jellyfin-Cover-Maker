@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import Header from "./components/Header";
 import OptionsDisplay from "./components/OptionsDisplay";
+import WebFont from "webfontloader";
 
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
@@ -27,6 +28,7 @@ export default function App() {
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [textSize, setTextSize] = useState(DEFAULT_TEXT_SIZE);
     const [bgDim, setBgDim] = useState(DEFAULT_BG_DIM);
+    const [fontName, setFontName] = useState("Montserrat");
     const [imageType, setImageType] = useState<"cover" | "poster">("cover");
 
     const getCanvasWidth = () => camvasSizes[imageType].width;
@@ -121,7 +123,7 @@ export default function App() {
         ctx.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
         document.fonts.ready.then(() => {
-            ctx.font = `bold ${textSize}px "Montserrat", sans-serif`;
+            ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -155,7 +157,21 @@ export default function App() {
         if (image && canvasRef.current) {
             drawCanvas(image, title);
         }
-    }, [image, title, textSize, bgDim, imageType]);
+    }, [image, title, textSize, bgDim, imageType, fontName]);
+
+    useEffect(() => {
+        if (!fontName) return;
+        WebFont.load({
+            google: {
+                families: [fontName + ":400,700"],
+            },
+            active: () => {
+                if (image) {
+                    drawCanvas(image, title);
+                }
+            },
+        });
+    }, [fontName]);
 
     useEffect(() => {
         const defaultImg = new Image();
@@ -187,6 +203,8 @@ export default function App() {
                     setBgDim={setBgDim}
                     defaultBgDim={DEFAULT_BG_DIM}
                     downloadImage={downloadImage}
+                    font={fontName}
+                    setFont={setFontName}
                 />
 
                 <div
