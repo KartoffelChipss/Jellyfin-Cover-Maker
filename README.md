@@ -2,6 +2,8 @@
 
 Easily create covers for your Jellyfin Libraries. This is a more easily usable alternative to [eebette's jellyfin tools](https://github.com/eebette/jellyfin-tools).
 
+![Website preview](./examples/home.png)
+
 ## How to use
 
 1. Go to https://jfcovers.jan.run/
