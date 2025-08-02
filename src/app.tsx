@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import FileInput from "./components/FileInput";
-import { Download, ImageOff } from "lucide-preact";
-import SliderInput from "./components/SliderInput";
 import Header from "./components/Header";
-import ImageTypeSelect from "./components/ImageTypeSelect";
+import OptionsDisplay from "./components/OptionsDisplay";
 
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
@@ -137,13 +134,6 @@ export default function App() {
         });
     };
 
-    const handleTitleChange = (e: Event) => {
-        const input = e.target as HTMLInputElement;
-        const newTitle = input.value;
-        setTitle(newTitle);
-        if (image) drawCanvas(image, newTitle);
-    };
-
     const formatTitleForFileName = (title: string) => {
         return title
             .replace(/[^a-zA-Z0-9\s]/g, "")
@@ -184,79 +174,20 @@ export default function App() {
         <>
             <Header />
             <div className="flex gap-5 w-full">
-                <div className="flex flex-col gap-5 w-1/3">
-                    <label className="w-full">
-                        <span className="text-sm text-muted-foreground">
-                            Title:
-                        </span>
-                        <input
-                            class="input"
-                            type="text"
-                            value={title}
-                            onInput={handleTitleChange}
-                            placeholder="Enter title"
-                        />
-                    </label>
-
-                    <div className="flex flex-col grow">
-                        <span className="text-sm text-muted-foreground mb-1">
-                            Background Image:
-                        </span>
-                        <FileInput onImageUpload={handleImageUpload} />
-                    </div>
-
-                    <div className="flex flex-col grow">
-                        <span className="text-sm text-muted-foreground mb-1">
-                            Image Type:
-                        </span>
-                        <ImageTypeSelect
-                            value={imageType}
-                            onChange={(t) => handleImageTypeChange(t)}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground mb-1">
-                            Text Size:
-                        </span>
-                        <SliderInput
-                            value={textSize}
-                            min={1}
-                            max={250}
-                            onChange={(v) => setTextSize(v)}
-                            step={1}
-                            showPlusMinusButtons
-                            displayValue
-                            displayUnit="px"
-                            defaultValue={getDefaultFontSize()}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground mb-1">
-                            Background Dim:
-                        </span>
-                        <SliderInput
-                            value={bgDim}
-                            min={0}
-                            max={1}
-                            onChange={(v) => setBgDim(v)}
-                            step={0.01}
-                            showPlusMinusButtons
-                            displayValue
-                            decimalPlaces={2}
-                            defaultValue={DEFAULT_BG_DIM}
-                        />
-                    </div>
-
-                    <button
-                        onClick={downloadImage}
-                        className="btn font-bold w-full"
-                    >
-                        <Download />
-                        Download
-                    </button>
-                </div>
+                <OptionsDisplay
+                    title={title}
+                    setTitle={setTitle}
+                    textSize={textSize}
+                    setTextSize={setTextSize}
+                    defaultFontSize={getDefaultFontSize()}
+                    setImage={handleImageUpload}
+                    imageType={imageType}
+                    setImageType={handleImageTypeChange}
+                    bgDim={bgDim}
+                    setBgDim={setBgDim}
+                    defaultBgDim={DEFAULT_BG_DIM}
+                    downloadImage={downloadImage}
+                />
 
                 <div
                     className={
