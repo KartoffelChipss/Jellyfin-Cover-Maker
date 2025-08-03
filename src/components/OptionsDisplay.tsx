@@ -3,6 +3,7 @@ import FileInput from "./FileInput";
 import ImageTypeSelect from "./ImageTypeSelect";
 import SliderInput from "./SliderInput";
 import { Download } from "lucide-preact";
+import PopoverPicker from "./PopoverPicker";
 
 interface OptionsDisplayProps {
     title: string;
@@ -19,6 +20,10 @@ interface OptionsDisplayProps {
     defaultBgDim: number;
     font: string;
     setFont: (font: string) => void;
+    textColor: string;
+    setTextColor: (color: string) => void;
+    dimColor: string;
+    setDimColor: (color: string) => void;
 }
 
 const OptionsDisplay: FC<OptionsDisplayProps> = ({
@@ -36,8 +41,12 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     defaultBgDim,
     font,
     setFont,
+    textColor,
+    setTextColor,
+    dimColor,
+    setDimColor,
 }) => (
-    <div className="flex flex-col gap-5 w-1/3">
+    <div className="flex flex-col gap-5 w-1/3 mb-5">
         <div className="flex gap-3">
             <label className="grow-2">
                 <span className="text-sm text-muted-foreground">Title:</span>
@@ -130,6 +139,29 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                 decimalPlaces={2}
                 defaultValue={defaultBgDim}
             />
+        </div>
+
+        <div className="flex gap-3">
+            <div className="flex flex-col grow">
+                <span className="text-sm text-muted-foreground mb-1">
+                    Text color:
+                </span>
+                <PopoverPicker
+                    color={textColor}
+                    onChange={setTextColor}
+                    defaultColor="#ffffff"
+                />
+            </div>
+            <div className="flex flex-col grow">
+                <span className="text-sm text-muted-foreground mb-1">
+                    Dim color:
+                </span>
+                <PopoverPicker
+                    color={dimColor}
+                    onChange={setDimColor}
+                    defaultColor="#000000"
+                />
+            </div>
         </div>
 
         <button onClick={downloadImage} className="btn font-bold w-full">

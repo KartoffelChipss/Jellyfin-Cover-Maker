@@ -13,6 +13,7 @@ interface SliderInputProps {
     displayValue?: boolean;
     displayUnit?: string;
     decimalPlaces?: number;
+    className?: string;
 }
 
 const SliderInput: FC<SliderInputProps> = ({
@@ -27,6 +28,7 @@ const SliderInput: FC<SliderInputProps> = ({
     displayValue = false,
     displayUnit,
     decimalPlaces = 0,
+    className = "",
 }) => {
     const sliderRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +51,7 @@ const SliderInput: FC<SliderInputProps> = ({
     };
 
     return (
-        <div className="flex gap-3 items-center justify-between">
+        <div className={"flex gap-3 items-center justify-between " + className}>
             {showPlusMinusButtons && (
                 <button
                     className="btn-ghost"

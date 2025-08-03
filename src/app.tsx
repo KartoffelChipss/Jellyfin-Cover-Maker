@@ -3,6 +3,16 @@ import Header from "./components/Header";
 import OptionsDisplay from "./components/OptionsDisplay";
 import WebFont from "webfontloader";
 
+const hexToRgb = (hex: string): [number, number, number] => {
+    const match = hex.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+    if (!match) return [0, 0, 0];
+    return [
+        parseInt(match[1], 16),
+        parseInt(match[2], 16),
+        parseInt(match[3], 16),
+    ];
+};
+
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
     const DEFAULT_BG_DIM = 0.4;
@@ -30,6 +40,8 @@ export default function App() {
     const [bgDim, setBgDim] = useState(DEFAULT_BG_DIM);
     const [fontName, setFontName] = useState("Montserrat");
     const [imageType, setImageType] = useState<"cover" | "poster">("cover");
+    const [textColor, setTextColor] = useState("#ffffff");
+    const [dimColor, setDimColor] = useState("#000000");
 
     const getCanvasWidth = () => camvasSizes[imageType].width;
     const getCanvasHeight = () => camvasSizes[imageType].height;
@@ -119,12 +131,13 @@ export default function App() {
         );
 
         // dim overlay
-        ctx.fillStyle = `rgba(0, 0, 0, ${bgDim})`;
+        const [r, g, b] = hexToRgb(dimColor);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${bgDim})`;
         ctx.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
         document.fonts.ready.then(() => {
             ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
-            ctx.fillStyle = "white";
+            ctx.fillStyle = textColor;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             drawWrappedText(
@@ -157,7 +170,16 @@ export default function App() {
         if (image && canvasRef.current) {
             drawCanvas(image, title);
         }
-    }, [image, title, textSize, bgDim, imageType, fontName]);
+    }, [
+        image,
+        title,
+        textSize,
+        bgDim,
+        imageType,
+        fontName,
+        textColor,
+        dimColor,
+    ]);
 
     useEffect(() => {
         if (!fontName) return;
@@ -205,6 +227,10 @@ export default function App() {
                     downloadImage={downloadImage}
                     font={fontName}
                     setFont={setFontName}
+                    textColor={textColor}
+                    setTextColor={setTextColor}
+                    dimColor={dimColor}
+                    setDimColor={setDimColor}
                 />
 
                 <div
