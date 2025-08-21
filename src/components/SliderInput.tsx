@@ -1,4 +1,4 @@
-import { Plus, Undo2 } from "lucide-preact";
+import { Minus, Plus, Undo2 } from "lucide-preact";
 import { type FC, useEffect, useRef } from "preact/compat";
 
 interface SliderInputProps {
@@ -66,7 +66,7 @@ const SliderInput: FC<SliderInputProps> = ({
                     }
                     disabled={value <= min}
                 >
-                    <Plus />
+                    <Minus />
                 </button>
             )}
 
