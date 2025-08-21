@@ -71,9 +71,8 @@ export default function App() {
     ) => {
         ctx.textAlign = align;
 
-        let x: number;
+        let x: number = getCanvasWidth() / 2;
         if (align === "left") x = maxWidth * 0.05;
-        else if (align === "center") x = getCanvasWidth() / 2;
         else if (align === "right") x = getCanvasWidth() - maxWidth * 0.05;
 
         const words = text.split(" ");

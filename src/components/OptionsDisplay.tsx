@@ -106,7 +106,12 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     setTextAlign(nextAlign);
                 }}
             >
-                <button class="btn-icon-outline">
+                <button
+                    class="btn-icon-outline"
+                    type="button"
+                    title={`Align text to ${textAlign}`}
+                    aria-label={`Align text to ${textAlign}`}
+                >
                     {textAlign === "left" && <AlignLeft />}
                     {textAlign === "center" && <AlignCenter />}
                     {textAlign === "right" && <AlignRight />}
