@@ -4,6 +4,7 @@ import OptionsDisplay from "./components/OptionsDisplay";
 import WebFont from "webfontloader";
 
 export type TextAlign = "left" | "center" | "right";
+export type TextBaseLine = "top" | "middle" | "bottom";
 
 const hexToRgb = (hex: string): [number, number, number] => {
     const match = hex.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
@@ -45,6 +46,7 @@ export default function App() {
     const [textColor, setTextColor] = useState("#ffffff");
     const [dimColor, setDimColor] = useState("#000000");
     const [textAlign, setTextAlign] = useState<TextAlign>("center");
+    const [textBaseline, setTextBaseline] = useState<TextBaseLine>("middle");
 
     const getCanvasWidth = () => camvasSizes[imageType].width;
     const getCanvasHeight = () => camvasSizes[imageType].height;
@@ -67,7 +69,8 @@ export default function App() {
         text: string,
         maxWidth: number,
         lineHeight: number,
-        align: TextAlign
+        align: TextAlign,
+        baseline: TextBaseLine
     ) => {
         ctx.textAlign = align;
 
@@ -92,7 +95,19 @@ export default function App() {
         lines.push(currentLine);
 
         const totalHeight = lines.length * lineHeight;
-        let y = (getCanvasHeight() - totalHeight) / 2 + lineHeight / 2;
+
+        const padding = getCanvasHeight() * 0.05;
+        let y: number;
+        if (baseline === "top") {
+            y = padding;
+            ctx.textBaseline = "top";
+        } else if (baseline === "middle") {
+            y = getCanvasHeight() / 2 - totalHeight / 2;
+            ctx.textBaseline = "top";
+        } else {
+            y = getCanvasHeight() - totalHeight - padding;
+            ctx.textBaseline = "top";
+        }
 
         for (const line of lines) {
             ctx.fillText(line, x, y);
@@ -149,13 +164,14 @@ export default function App() {
             ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
             ctx.fillStyle = textColor;
             ctx.textAlign = textAlign;
-            ctx.textBaseline = "middle";
+            ctx.textBaseline = textBaseline;
             drawWrappedText(
                 ctx,
                 titleText,
                 getCanvasWidth() * 0.9,
                 textSize * 1.2,
-                textAlign
+                textAlign,
+                textBaseline
             );
         });
     };
@@ -191,6 +207,7 @@ export default function App() {
         textColor,
         dimColor,
         textAlign,
+        textBaseline,
     ]);
 
     useEffect(() => {
@@ -245,6 +262,8 @@ export default function App() {
                     setDimColor={setDimColor}
                     textAlign={textAlign}
                     setTextAlign={setTextAlign}
+                    textBaseline={textBaseline}
+                    setTextBaseline={setTextBaseline}
                 />
 
                 <div

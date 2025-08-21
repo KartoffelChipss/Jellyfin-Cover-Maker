@@ -2,10 +2,18 @@ import type { FC } from "preact/compat";
 import FileInput from "./FileInput";
 import ImageTypeSelect from "./ImageTypeSelect";
 import SliderInput from "./SliderInput";
-import { AlignCenter, AlignLeft, AlignRight, Download } from "lucide-preact";
+import {
+    AlignCenter,
+    AlignJustify,
+    AlignLeft,
+    AlignRight,
+    Download,
+} from "lucide-preact";
 import PopoverPicker from "./PopoverPicker";
-import type { TextAlign } from "../app";
+import type { TextAlign, TextBaseLine } from "../app";
 import FontOptions from "./FontOptions";
+import BasleineTop from "./icons/BaselineTop";
+import BaselineBottom from "./icons/BaselineBottom";
 
 interface OptionsDisplayProps {
     title: string;
@@ -28,6 +36,8 @@ interface OptionsDisplayProps {
     setDimColor: (color: string) => void;
     textAlign: TextAlign;
     setTextAlign: (align: TextAlign) => void;
+    textBaseline: TextBaseLine;
+    setTextBaseline: (baseline: TextBaseLine) => void;
 }
 
 const OptionsDisplay: FC<OptionsDisplayProps> = ({
@@ -51,6 +61,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     setDimColor,
     textAlign,
     setTextAlign,
+    textBaseline,
+    setTextBaseline,
 }) => (
     <div className="flex flex-col gap-5 w-1/3 mb-5">
         <div className="flex gap-3 items-end">
@@ -96,6 +108,30 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     {textAlign === "left" && <AlignLeft />}
                     {textAlign === "center" && <AlignCenter />}
                     {textAlign === "right" && <AlignRight />}
+                </button>
+            </label>
+            <label
+                className="grow"
+                onClick={(e) => {
+                    e.preventDefault();
+                    const nextBaseline =
+                        textBaseline === "top"
+                            ? "middle"
+                            : textBaseline === "middle"
+                            ? "bottom"
+                            : "top";
+                    setTextBaseline(nextBaseline);
+                }}
+            >
+                <button
+                    class="btn-icon-outline"
+                    type="button"
+                    title={`Align text baseline to ${textBaseline}`}
+                    aria-label={`Align text baseline to ${textBaseline}`}
+                >
+                    {textBaseline === "top" && <BasleineTop />}
+                    {textBaseline === "middle" && <AlignJustify />}
+                    {textBaseline === "bottom" && <BaselineBottom />}
                 </button>
             </label>
         </div>
