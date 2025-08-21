@@ -14,6 +14,7 @@ interface SliderInputProps {
     displayUnit?: string;
     decimalPlaces?: number;
     className?: string;
+    disabled?: boolean;
 }
 
 const SliderInput: FC<SliderInputProps> = ({
@@ -29,6 +30,7 @@ const SliderInput: FC<SliderInputProps> = ({
     displayUnit,
     decimalPlaces = 0,
     className = "",
+    disabled = false,
 }) => {
     const sliderRef = useRef<HTMLInputElement>(null);
 
@@ -51,7 +53,11 @@ const SliderInput: FC<SliderInputProps> = ({
     };
 
     return (
-        <div className={"flex gap-3 items-center justify-between " + className}>
+        <div
+            className={
+                "relative flex gap-3 items-center justify-between " + className
+            }
+        >
             {showPlusMinusButtons && (
                 <button
                     className="btn-ghost"
@@ -74,6 +80,7 @@ const SliderInput: FC<SliderInputProps> = ({
                 defaultValue={defaultValue}
                 onInput={handleInput}
                 ref={sliderRef}
+                disabled={disabled}
             />
 
             {showPlusMinusButtons && (
@@ -82,7 +89,7 @@ const SliderInput: FC<SliderInputProps> = ({
                     onClick={() =>
                         onChange(Math.min(max, value + (buttonStep || step)))
                     }
-                    disabled={value >= max}
+                    disabled={value >= max || disabled}
                 >
                     <Plus />
                 </button>
@@ -110,11 +117,15 @@ const SliderInput: FC<SliderInputProps> = ({
                 <button
                     className="btn-ghost"
                     onClick={() => onChange(defaultValue)}
-                    disabled={value === defaultValue}
+                    disabled={value === defaultValue || disabled}
                     title="Reset to default value"
                 >
                     <Undo2 />
                 </button>
+            )}
+
+            {disabled && (
+                <div className="absolute inset-0 bg-black opacity-50 pointer-events-none"></div>
             )}
         </div>
     );

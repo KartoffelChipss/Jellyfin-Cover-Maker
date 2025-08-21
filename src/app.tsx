@@ -19,6 +19,7 @@ const hexToRgb = (hex: string): [number, number, number] => {
 export default function App() {
     const DEFAULT_TEXT_SIZE = 120;
     const DEFAULT_BG_DIM = 0.4;
+    const DEFAULT_TEXT_PADDING = 0.05;
 
     const camvasSizes: Record<
         "cover" | "poster",
@@ -47,6 +48,7 @@ export default function App() {
     const [dimColor, setDimColor] = useState("#000000");
     const [textAlign, setTextAlign] = useState<TextAlign>("center");
     const [textBaseline, setTextBaseline] = useState<TextBaseLine>("middle");
+    const [textPadding, setTextPadding] = useState(DEFAULT_TEXT_PADDING);
 
     const getCanvasWidth = () => camvasSizes[imageType].width;
     const getCanvasHeight = () => camvasSizes[imageType].height;
@@ -75,8 +77,9 @@ export default function App() {
         ctx.textAlign = align;
 
         let x: number = getCanvasWidth() / 2;
-        if (align === "left") x = maxWidth * 0.05;
-        else if (align === "right") x = getCanvasWidth() - maxWidth * 0.05;
+        if (align === "left") x = maxWidth * textPadding;
+        else if (align === "right")
+            x = getCanvasWidth() - maxWidth * textPadding;
 
         const words = text.split(" ");
         const lines: string[] = [];
@@ -96,7 +99,7 @@ export default function App() {
 
         const totalHeight = lines.length * lineHeight;
 
-        const padding = getCanvasHeight() * 0.05;
+        const padding = getCanvasHeight() * textPadding;
         let y: number;
         if (baseline === "top") {
             y = padding;
@@ -208,6 +211,7 @@ export default function App() {
         dimColor,
         textAlign,
         textBaseline,
+        textPadding,
     ]);
 
     useEffect(() => {
@@ -264,6 +268,9 @@ export default function App() {
                     setTextAlign={setTextAlign}
                     textBaseline={textBaseline}
                     setTextBaseline={setTextBaseline}
+                    defaultTextPadding={DEFAULT_TEXT_PADDING}
+                    textPadding={textPadding}
+                    setTextPadding={setTextPadding}
                 />
 
                 <div

@@ -38,6 +38,9 @@ interface OptionsDisplayProps {
     setTextAlign: (align: TextAlign) => void;
     textBaseline: TextBaseLine;
     setTextBaseline: (baseline: TextBaseLine) => void;
+    defaultTextPadding: number;
+    textPadding: number;
+    setTextPadding: (padding: number) => void;
 }
 
 const OptionsDisplay: FC<OptionsDisplayProps> = ({
@@ -63,6 +66,9 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     setTextAlign,
     textBaseline,
     setTextBaseline,
+    defaultTextPadding,
+    textPadding,
+    setTextPadding,
 }) => (
     <div className="flex flex-col gap-5 w-1/3 mb-5">
         <div className="flex gap-3 items-end">
@@ -150,6 +156,25 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
             <ImageTypeSelect
                 value={imageType}
                 onChange={(t) => setImageType(t)}
+            />
+        </div>
+
+        <div className="flex flex-col">
+            <span className="text-sm text-muted-foreground mb-1">
+                Text Padding:
+            </span>
+            <SliderInput
+                value={textPadding}
+                min={0}
+                max={0.5}
+                decimalPlaces={2}
+                onChange={(v) => setTextPadding(v)}
+                step={0.01}
+                showPlusMinusButtons
+                displayValue
+                displayUnit="%"
+                defaultValue={defaultTextPadding}
+                disabled={textAlign == "center" && textBaseline == "middle"}
             />
         </div>
 
