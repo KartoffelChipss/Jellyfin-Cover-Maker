@@ -200,7 +200,7 @@ export default function App() {
         defaultImg.onload = () => {
             setImage(defaultImg);
         };
-        defaultImg.src = "/default-bg.jpg";
+        defaultImg.src = "/default-bg.webp";
     }, []);
 
     const handleImageTypeChange = (type: "cover" | "poster") => {
@@ -211,7 +211,7 @@ export default function App() {
     return (
         <>
             <Header />
-            <div className="flex gap-5 w-full">
+            <div className="flex gap-5 w-full mb-5">
                 <OptionsDisplay
                     title={title}
                     setTitle={setTitle}
