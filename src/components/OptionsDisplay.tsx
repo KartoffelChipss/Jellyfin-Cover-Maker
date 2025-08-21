@@ -5,6 +5,7 @@ import SliderInput from "./SliderInput";
 import { AlignCenter, AlignLeft, AlignRight, Download } from "lucide-preact";
 import PopoverPicker from "./PopoverPicker";
 import type { TextAlign } from "../app";
+import FontOptions from "./FontOptions";
 
 interface OptionsDisplayProps {
     title: string;
@@ -70,27 +71,7 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     onChange={(e) => setFont(e.currentTarget.value)}
                     value={font}
                 >
-                    <option value="Montserrat" selected>
-                        Montserrat
-                    </option>
-                    <option value="Oswald">Oswald</option>
-                    <option value="Anton">Anton</option>
-                    <option value="Playfair Display">Playfair Display</option>
-                    <option value="Raleway">Raleway</option>
-                    <option value="Poppins">Poppins</option>
-                    <option value="Cormorant">Cormorant</option>
-                    <option value="Alegreya">Alegreya</option>
-                    <option value="Alegreya Sans">Alegreya Sans</option>
-                    <option value="Source Sans Pro">Source Sans Pro</option>
-                    <option value="Source Serif Pro">Source Serif Pro</option>
-                    <option value="Work Sans">Work Sans</option>
-                    <option value="Inter">Inter</option>
-                    <option value="Lato">Lato</option>
-                    <option value="Open Sans">Open Sans</option>
-                    <option value="Merriweather">Merriweather</option>
-                    <option value="Eczar">Eczar</option>
-                    <option value="Syne">Syne</option>
-                    <option value="Unbounded">Unbounded</option>
+                    <FontOptions />
                 </select>
             </label>
             <label
