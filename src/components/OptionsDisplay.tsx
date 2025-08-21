@@ -2,8 +2,9 @@ import type { FC } from "preact/compat";
 import FileInput from "./FileInput";
 import ImageTypeSelect from "./ImageTypeSelect";
 import SliderInput from "./SliderInput";
-import { Download } from "lucide-preact";
+import { AlignCenter, AlignLeft, AlignRight, Download } from "lucide-preact";
 import PopoverPicker from "./PopoverPicker";
+import type { TextAlign } from "../app";
 
 interface OptionsDisplayProps {
     title: string;
@@ -24,6 +25,8 @@ interface OptionsDisplayProps {
     setTextColor: (color: string) => void;
     dimColor: string;
     setDimColor: (color: string) => void;
+    textAlign: TextAlign;
+    setTextAlign: (align: TextAlign) => void;
 }
 
 const OptionsDisplay: FC<OptionsDisplayProps> = ({
@@ -45,9 +48,11 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     setTextColor,
     dimColor,
     setDimColor,
+    textAlign,
+    setTextAlign,
 }) => (
     <div className="flex flex-col gap-5 w-1/3 mb-5">
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-end">
             <label className="grow-2">
                 <span className="text-sm text-muted-foreground">Title:</span>
                 <input
@@ -87,6 +92,25 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     <option value="Syne">Syne</option>
                     <option value="Unbounded">Unbounded</option>
                 </select>
+            </label>
+            <label
+                className="grow"
+                onClick={(e) => {
+                    e.preventDefault();
+                    const nextAlign =
+                        textAlign === "left"
+                            ? "center"
+                            : textAlign === "center"
+                            ? "right"
+                            : "left";
+                    setTextAlign(nextAlign);
+                }}
+            >
+                <button class="btn-icon-outline">
+                    {textAlign === "left" && <AlignLeft />}
+                    {textAlign === "center" && <AlignCenter />}
+                    {textAlign === "right" && <AlignRight />}
+                </button>
             </label>
         </div>
 
