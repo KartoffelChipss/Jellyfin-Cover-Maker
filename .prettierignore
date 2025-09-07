@@ -1,0 +1,7 @@
+.github/
+examples/
+node_modules/
+dist/
+build/
+package.json
+pnpm-lock.yaml
