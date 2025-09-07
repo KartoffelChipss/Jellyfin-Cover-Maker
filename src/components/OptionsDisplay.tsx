@@ -1,19 +1,13 @@
-import type { FC } from "preact/compat";
-import FileInput from "./FileInput";
-import ImageTypeSelect from "./ImageTypeSelect";
-import SliderInput from "./SliderInput";
-import {
-    AlignCenter,
-    AlignJustify,
-    AlignLeft,
-    AlignRight,
-    Download,
-} from "lucide-preact";
-import PopoverPicker from "./PopoverPicker";
-import type { TextAlign, TextBaseLine } from "../app";
-import FontOptions from "./FontOptions";
-import BasleineTop from "./icons/BaselineTop";
-import BaselineBottom from "./icons/BaselineBottom";
+import type { FC } from 'preact/compat';
+import FileInput from './FileInput';
+import ImageTypeSelect from './ImageTypeSelect';
+import SliderInput from './SliderInput';
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Download } from 'lucide-preact';
+import PopoverPicker from './PopoverPicker';
+import type { TextAlign, TextBaseLine } from '../app';
+import FontOptions from './FontOptions';
+import BasleineTop from './icons/BaselineTop';
+import BaselineBottom from './icons/BaselineBottom';
 
 interface OptionsDisplayProps {
     title: string;
@@ -23,8 +17,12 @@ interface OptionsDisplayProps {
     setTextSize: (size: number) => void;
     bgDim: number;
     setBgDim: (dim: number) => void;
-    imageType: "cover" | "poster";
-    setImageType: (type: "cover" | "poster") => void;
+    imageType: 'cover' | 'poster' | 'custom';
+    setImageType: (type: 'cover' | 'poster' | 'custom') => void;
+    customAspectRatioWidth: number;
+    setCustomAspectRatioWidth: (ratio: number) => void;
+    customAspectRatioHeight: number;
+    setCustomAspectRatioHeight: (ratio: number) => void;
     downloadImage: () => void;
     defaultFontSize: number;
     defaultBgDim: number;
@@ -53,6 +51,10 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     setBgDim,
     imageType,
     setImageType,
+    customAspectRatioWidth,
+    setCustomAspectRatioWidth,
+    customAspectRatioHeight,
+    setCustomAspectRatioHeight,
     downloadImage,
     defaultFontSize,
     defaultBgDim,
@@ -97,11 +99,7 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                 onClick={(e) => {
                     e.preventDefault();
                     const nextAlign =
-                        textAlign === "left"
-                            ? "center"
-                            : textAlign === "center"
-                            ? "right"
-                            : "left";
+                        textAlign === 'left' ? 'center' : textAlign === 'center' ? 'right' : 'left';
                     setTextAlign(nextAlign);
                 }}
             >
@@ -111,9 +109,9 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     title={`Align text to ${textAlign}`}
                     aria-label={`Align text to ${textAlign}`}
                 >
-                    {textAlign === "left" && <AlignLeft />}
-                    {textAlign === "center" && <AlignCenter />}
-                    {textAlign === "right" && <AlignRight />}
+                    {textAlign === 'left' && <AlignLeft />}
+                    {textAlign === 'center' && <AlignCenter />}
+                    {textAlign === 'right' && <AlignRight />}
                 </button>
             </label>
             <label
@@ -121,11 +119,11 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                 onClick={(e) => {
                     e.preventDefault();
                     const nextBaseline =
-                        textBaseline === "top"
-                            ? "middle"
-                            : textBaseline === "middle"
-                            ? "bottom"
-                            : "top";
+                        textBaseline === 'top'
+                            ? 'middle'
+                            : textBaseline === 'middle'
+                            ? 'bottom'
+                            : 'top';
                     setTextBaseline(nextBaseline);
                 }}
             >
@@ -135,34 +133,50 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     title={`Align text baseline to ${textBaseline}`}
                     aria-label={`Align text baseline to ${textBaseline}`}
                 >
-                    {textBaseline === "top" && <BasleineTop />}
-                    {textBaseline === "middle" && <AlignJustify />}
-                    {textBaseline === "bottom" && <BaselineBottom />}
+                    {textBaseline === 'top' && <BasleineTop />}
+                    {textBaseline === 'middle' && <AlignJustify />}
+                    {textBaseline === 'bottom' && <BaselineBottom />}
                 </button>
             </label>
         </div>
 
-        <div className="flex flex-col grow">
-            <span className="text-sm text-muted-foreground mb-1">
-                Background Image:
-            </span>
+        <div className="flex flex-col">
+            <span className="text-sm text-muted-foreground mb-1">Background Image:</span>
             <FileInput onImageUpload={setImage} />
         </div>
 
-        <div className="flex flex-col grow">
-            <span className="text-sm text-muted-foreground mb-1">
-                Image Type:
-            </span>
-            <ImageTypeSelect
-                value={imageType}
-                onChange={(t) => setImageType(t)}
-            />
+        <div className="flex flex-col">
+            <span className="text-sm text-muted-foreground mb-1">Image Type:</span>
+            <ImageTypeSelect value={imageType} onChange={(t) => setImageType(t)} />
         </div>
 
+        {imageType === 'custom' && (
+            <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground mb-1">Custom Aspect Ratio:</span>
+                <div className="flex flex-row items-center gap-2">
+                    <input
+                        class="input grow"
+                        type="number"
+                        value={customAspectRatioWidth}
+                        onInput={(e) => setCustomAspectRatioWidth(Number(e.currentTarget.value))}
+                        placeholder="Width"
+                        min={1}
+                    />
+                    <span className="mx-1">:</span>
+                    <input
+                        class="input grow"
+                        type="number"
+                        value={customAspectRatioHeight}
+                        onInput={(e) => setCustomAspectRatioHeight(Number(e.currentTarget.value))}
+                        placeholder="Height"
+                        min={1}
+                    />
+                </div>
+            </div>
+        )}
+
         <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground mb-1">
-                Text Padding:
-            </span>
+            <span className="text-sm text-muted-foreground mb-1">Text Padding:</span>
             <SliderInput
                 value={textPadding}
                 min={0}
@@ -174,14 +188,12 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                 displayValue
                 displayUnit="%"
                 defaultValue={defaultTextPadding}
-                disabled={textAlign == "center" && textBaseline == "middle"}
+                disabled={textAlign == 'center' && textBaseline == 'middle'}
             />
         </div>
 
         <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground mb-1">
-                Text Size:
-            </span>
+            <span className="text-sm text-muted-foreground mb-1">Text Size:</span>
             <SliderInput
                 value={textSize}
                 min={1}
@@ -196,9 +208,7 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
         </div>
 
         <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground mb-1">
-                Background Dim:
-            </span>
+            <span className="text-sm text-muted-foreground mb-1">Background Dim:</span>
             <SliderInput
                 value={bgDim}
                 min={0}
@@ -214,24 +224,12 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
 
         <div className="flex gap-3">
             <div className="flex flex-col grow">
-                <span className="text-sm text-muted-foreground mb-1">
-                    Text color:
-                </span>
-                <PopoverPicker
-                    color={textColor}
-                    onChange={setTextColor}
-                    defaultColor="#ffffff"
-                />
+                <span className="text-sm text-muted-foreground mb-1">Text color:</span>
+                <PopoverPicker color={textColor} onChange={setTextColor} defaultColor="#ffffff" />
             </div>
             <div className="flex flex-col grow">
-                <span className="text-sm text-muted-foreground mb-1">
-                    Dim color:
-                </span>
-                <PopoverPicker
-                    color={dimColor}
-                    onChange={setDimColor}
-                    defaultColor="#000000"
-                />
+                <span className="text-sm text-muted-foreground mb-1">Dim color:</span>
+                <PopoverPicker color={dimColor} onChange={setDimColor} defaultColor="#000000" />
             </div>
         </div>
 
