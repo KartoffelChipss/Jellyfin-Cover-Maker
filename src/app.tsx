@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import Header from './components/Header';
 import OptionsDisplay from './components/OptionsDisplay';
 import WebFont from 'webfontloader';
+import Modal from './components/Modal';
+import { Download } from 'lucide-preact';
 
 export type TextAlign = 'left' | 'center' | 'right';
 export type TextBaseLine = 'top' | 'middle' | 'bottom';
@@ -56,6 +58,7 @@ export default function App() {
     };
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [downloadModalOpen, setDownloadModalOpen] = useState(false);
     const [title, setTitle] = useState('Movies');
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [textSize, setTextSize] = useState(DEFAULT_TEXT_SIZE);
@@ -96,6 +99,36 @@ export default function App() {
             );
         }
         return canvasSizes[imageType].defaultFontSize;
+    };
+
+    const [downloadWidth, setDownloadWidth] = useState(getCanvasWidth());
+    const [downloadHeight, setDownloadHeight] = useState(getCanvasHeight());
+    const [downloadScale, setDownloadScale] = useState(1);
+
+    const syncFromWidth = (w: number) => {
+        const baseW = getCanvasWidth();
+        const baseH = getCanvasHeight();
+        const aspect = baseW / baseH;
+
+        const width = Math.max(1, Math.round(w || 1));
+        const height = Math.round(width / aspect);
+
+        setDownloadWidth(width);
+        setDownloadHeight(height);
+        setDownloadScale(width / baseW);
+    };
+
+    const syncFromHeight = (h: number) => {
+        const baseW = getCanvasWidth();
+        const baseH = getCanvasHeight();
+        const aspect = baseW / baseH;
+
+        const height = Math.max(1, Math.round(h || 1));
+        const width = Math.round(height * aspect);
+
+        setDownloadHeight(height);
+        setDownloadWidth(width);
+        setDownloadScale(height / baseH);
     };
 
     const handleImageUpload = (e: Event) => {
@@ -161,20 +194,26 @@ export default function App() {
         }
     };
 
-    const drawCanvas = (img: HTMLImageElement, titleText: string) => {
-        console.log('Custom Aspect Ratio:', customAspectRatioWidth, ':', customAspectRatioHeight);
-        console.log('Canvas Size:', getCanvasWidth(), 'x', getCanvasHeight());
-
-        const canvas = canvasRef.current;
+    const renderCanvas = async (
+        canvas: HTMLCanvasElement | null,
+        img: HTMLImageElement,
+        titleText: string,
+        scale: number = 1
+    ) => {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        canvas.width = getCanvasWidth();
-        canvas.height = getCanvasHeight();
+        const width = getCanvasWidth() * scale;
+        const height = getCanvasHeight() * scale;
+
+        canvas.width = width;
+        canvas.height = height;
 
         const canvasWidth = getCanvasWidth();
         const canvasHeight = getCanvasHeight();
+
+        ctx.scale(scale, scale);
 
         const imgAspect = img.width / img.height;
         const canvasAspect = canvasWidth / canvasHeight;
@@ -209,20 +248,26 @@ export default function App() {
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${bgDim})`;
         ctx.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
-        document.fonts.ready.then(() => {
-            ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
-            ctx.fillStyle = textColor;
-            ctx.textAlign = textAlign;
-            ctx.textBaseline = textBaseline;
-            drawWrappedText(
-                ctx,
-                titleText,
-                getCanvasWidth() * 0.9,
-                textSize * 1.2,
-                textAlign,
-                textBaseline
-            );
-        });
+        // make sure font is loaded
+        try {
+            await document.fonts.load(`700 ${textSize}px "${fontName}"`);
+            await document.fonts.ready; // extra safety for all faces
+        } catch (_) {
+            // ignore
+        }
+
+        ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
+        ctx.fillStyle = textColor;
+        ctx.textAlign = textAlign;
+        ctx.textBaseline = textBaseline;
+        drawWrappedText(
+            ctx,
+            titleText,
+            getCanvasWidth() * 0.9,
+            textSize * 1.2,
+            textAlign,
+            textBaseline
+        );
     };
 
     const formatTitleForFileName = (title: string) => {
@@ -232,19 +277,19 @@ export default function App() {
             .toLowerCase();
     };
 
-    const downloadImage = () => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
+    const downloadImage = async () => {
+        if (!image) return;
+        const exportCanvas = document.createElement('canvas');
+        await renderCanvas(exportCanvas, image, title, downloadScale);
         const link = document.createElement('a');
         link.download = `jellyfin-cover-${formatTitleForFileName(title)}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = exportCanvas.toDataURL('image/png');
         link.click();
     };
 
     useEffect(() => {
         if (image && canvasRef.current) {
-            drawCanvas(image, title);
+            renderCanvas(canvasRef.current, image, title);
         }
     }, [
         image,
@@ -270,7 +315,7 @@ export default function App() {
             },
             active: () => {
                 if (image) {
-                    drawCanvas(image, title);
+                    renderCanvas(canvasRef.current, image, title);
                 }
             },
         });
@@ -283,6 +328,12 @@ export default function App() {
         };
         defaultImg.src = '/default-bg.webp';
     }, []);
+
+    useEffect(() => {
+        setDownloadScale(1);
+        setDownloadWidth(Math.round(getCanvasWidth()));
+        setDownloadHeight(Math.round(getCanvasHeight()));
+    }, [imageType, customAspectRatioWidth, customAspectRatioHeight]);
 
     const handleImageTypeChange = (type: 'cover' | 'poster' | 'custom') => {
         setImageType(type);
@@ -316,7 +367,7 @@ export default function App() {
                     bgDim={bgDim}
                     setBgDim={setBgDim}
                     defaultBgDim={DEFAULT_BG_DIM}
-                    downloadImage={downloadImage}
+                    downloadImage={() => setDownloadModalOpen(true)}
                     font={fontName}
                     setFont={setFontName}
                     textColor={textColor}
@@ -350,6 +401,82 @@ export default function App() {
                     />
                 </div>
             </div>
+            <Modal isOpen={downloadModalOpen} onClose={() => setDownloadModalOpen(false)}>
+                <div>
+                    <h2 class="text-lg font-bold mb-4">Download Image</h2>
+                    <p class="mb-4">
+                        Select the desired width and height for the downloaded image.
+                    </p>
+
+                    <div class="grid grid-cols-12 gap-4 mb-4">
+                        <div class="flex flex-col col-span-5">
+                            <label for="downloadWidth" class="text-sm text-muted-foreground">
+                                Width:
+                            </label>
+                            <input
+                                type="number"
+                                id="downloadWidth"
+                                class="input"
+                                value={downloadWidth}
+                                onChange={(e) => syncFromWidth(Number(e.currentTarget.value))}
+                            />
+                        </div>
+                        <div class="flex flex-col col-span-5">
+                            <label for="downloadHeight" class="text-sm text-muted-foreground">
+                                Height:
+                            </label>
+
+                            <input
+                                type="number"
+                                id="downloadHeight"
+                                class="input"
+                                value={downloadHeight}
+                                onChange={(e) => syncFromHeight(Number(e.currentTarget.value))}
+                            />
+                        </div>
+                        <div class="flex flex-col col-span-2">
+                            <label for="downloadScale" class="text-sm text-muted-foreground">
+                                Scale:
+                            </label>
+                            <input
+                                type="number"
+                                id="downloadScale"
+                                class="input"
+                                value={downloadScale}
+                                step={0.1}
+                                min={0.1}
+                                onChange={(e) => {
+                                    const scale = Math.max(
+                                        0.1,
+                                        Number(e.currentTarget.value) || 0.1
+                                    );
+                                    setDownloadScale(scale);
+                                    setDownloadWidth(Math.round(getCanvasWidth() * scale));
+                                    setDownloadHeight(Math.round(getCanvasHeight() * scale));
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button
+                            class="btn btn-secondary mr-2 mb-2"
+                            onClick={() => setDownloadModalOpen(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            class="btn btn-primary"
+                            onClick={() => {
+                                downloadImage();
+                                setDownloadModalOpen(false);
+                            }}
+                        >
+                            <Download />
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }
