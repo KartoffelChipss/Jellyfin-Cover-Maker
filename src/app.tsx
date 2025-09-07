@@ -62,8 +62,8 @@ export default function App() {
     const [bgDim, setBgDim] = useState(DEFAULT_BG_DIM);
     const [fontName, setFontName] = useState('Montserrat');
     const [imageType, setImageType] = useState<'cover' | 'poster' | 'custom'>('cover');
-    const [customAspectRatioWidth, setCustomAspectRatioWidth] = useState(0.75);
-    const [customAspectRatioHeight, setCustomAspectRatioHeight] = useState(1);
+    const [customAspectRatioWidth, setCustomAspectRatioWidth] = useState(4);
+    const [customAspectRatioHeight, setCustomAspectRatioHeight] = useState(3);
     const [textColor, setTextColor] = useState('#ffffff');
     const [dimColor, setDimColor] = useState('#000000');
     const [textAlign, setTextAlign] = useState<TextAlign>('center');

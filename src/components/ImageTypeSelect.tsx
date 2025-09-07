@@ -1,4 +1,4 @@
-import { RectangleHorizontal, RectangleVertical } from 'lucide-preact';
+import { Fullscreen, RectangleHorizontal, RectangleVertical } from 'lucide-preact';
 import type { FC } from 'preact/compat';
 
 interface ImageTypeSelectProps {
@@ -20,7 +20,13 @@ const SelectOption: FC<{
                 selected ? selectedClasses : ''
             }`}
         >
-            {value === 'poster' ? <RectangleVertical /> : <RectangleHorizontal />}
+            {value === 'poster' ? (
+                <RectangleVertical />
+            ) : value === 'cover' ? (
+                <RectangleHorizontal />
+            ) : (
+                <Fullscreen />
+            )}
             <span>{value.charAt(0).toUpperCase() + value.slice(1)}</span>
         </button>
     );
