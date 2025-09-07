@@ -7,19 +7,10 @@ const GitHub = () => (
         stroke="#fefefe"
     >
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        ></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
             <defs></defs>
-            <g
-                id="Page-1"
-                stroke-width="0.0002"
-                fill="none"
-                fill-rule="evenodd"
-            >
+            <g id="Page-1" stroke-width="0.0002" fill="none" fill-rule="evenodd">
                 <g
                     id="Dribbble-Light-Preview"
                     transform="translate(-140.000000, -7559.000000)"
