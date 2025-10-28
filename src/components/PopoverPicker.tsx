@@ -1,9 +1,9 @@
-import { HexColorInput, HexColorPicker } from "react-colorful";
+import { HexColorInput, HexColorPicker } from 'react-colorful';
 
-import useClickOutside from "../hooks/useClicksOutside";
-import { useCallback, useRef, useState } from "preact/hooks";
-import type { FC } from "preact/compat";
-import { Undo2 } from "lucide-preact";
+import useClickOutside from '../hooks/useClicksOutside';
+import { useCallback, useRef, useState } from 'preact/hooks';
+import type { FC } from 'preact/compat';
+import { Undo2 } from 'lucide-preact';
 
 interface PopoverPickerProps {
     color: string;
@@ -11,11 +11,7 @@ interface PopoverPickerProps {
     defaultColor: string;
 }
 
-const PopoverPicker: FC<PopoverPickerProps> = ({
-    color,
-    onChange,
-    defaultColor,
-}) => {
+const PopoverPicker: FC<PopoverPickerProps> = ({ color, onChange, defaultColor }) => {
     const popover = useRef<HTMLDivElement>(null);
     const [isOpen, toggle] = useState(false);
 
@@ -41,10 +37,7 @@ const PopoverPicker: FC<PopoverPickerProps> = ({
                             color={color}
                             onChange={onChange}
                         />
-                        <button
-                            className="btn-ghost"
-                            onClick={() => onChange(defaultColor)}
-                        >
+                        <button className="btn-ghost" onClick={() => onChange(defaultColor)}>
                             <Undo2 />
                         </button>
                     </div>

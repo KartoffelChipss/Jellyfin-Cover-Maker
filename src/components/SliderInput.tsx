@@ -1,5 +1,5 @@
-import { Minus, Plus, Undo2 } from "lucide-preact";
-import { type FC, useEffect, useRef } from "preact/compat";
+import { Minus, Plus, Undo2 } from 'lucide-preact';
+import { type FC, useEffect, useRef } from 'preact/compat';
 
 interface SliderInputProps {
     value: number;
@@ -29,7 +29,7 @@ const SliderInput: FC<SliderInputProps> = ({
     displayValue = false,
     displayUnit,
     decimalPlaces = 0,
-    className = "",
+    className = '',
     disabled = false,
 }) => {
     const sliderRef = useRef<HTMLInputElement>(null);
@@ -39,7 +39,7 @@ const SliderInput: FC<SliderInputProps> = ({
         if (!el) return;
 
         const percent = max === min ? 0 : ((value - min) / (max - min)) * 100;
-        el.style.setProperty("--slider-value", `${percent}%`);
+        el.style.setProperty('--slider-value', `${percent}%`);
     };
 
     useEffect(() => {
@@ -53,17 +53,11 @@ const SliderInput: FC<SliderInputProps> = ({
     };
 
     return (
-        <div
-            className={
-                "relative flex gap-3 items-center justify-between " + className
-            }
-        >
+        <div className={'relative flex gap-3 items-center justify-between ' + className}>
             {showPlusMinusButtons && (
                 <button
                     className="btn-ghost"
-                    onClick={() =>
-                        onChange(Math.max(min, value - (buttonStep || step)))
-                    }
+                    onClick={() => onChange(Math.max(min, value - (buttonStep || step)))}
                     disabled={value <= min}
                 >
                     <Minus />
@@ -86,9 +80,7 @@ const SliderInput: FC<SliderInputProps> = ({
             {showPlusMinusButtons && (
                 <button
                     className="btn-ghost"
-                    onClick={() =>
-                        onChange(Math.min(max, value + (buttonStep || step)))
-                    }
+                    onClick={() => onChange(Math.min(max, value + (buttonStep || step)))}
                     disabled={value >= max || disabled}
                 >
                     <Plus />
@@ -100,15 +92,11 @@ const SliderInput: FC<SliderInputProps> = ({
                     <span className="text-md text-muted-foreground font-mono">
                         <span className="opacity-0">
                             {String(max).length > String(value).length
-                                ? "0".repeat(
-                                      String(max).length - String(value).length
-                                  )
-                                : ""}
+                                ? '0'.repeat(String(max).length - String(value).length)
+                                : ''}
                         </span>
-                        {decimalPlaces > 0
-                            ? value.toFixed(decimalPlaces)
-                            : value}
-                        {displayUnit ?? ""}
+                        {decimalPlaces > 0 ? value.toFixed(decimalPlaces) : value}
+                        {displayUnit ?? ''}
                     </span>
                 </div>
             )}

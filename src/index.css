@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "basecoat-css";
+@import 'tailwindcss';
+@import 'basecoat-css';
 
 body {
     width: 100%;
@@ -57,15 +57,20 @@ body {
     --shadow-color: oklch(0 0 0);
     --shadow-2xs: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.075);
     --shadow-xs: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.075);
-    --shadow-sm: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
+    --shadow-sm:
+        0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
         0 1px 2px -14.5px rgb(from var(--shadow-color) r g b / 0.15);
-    --shadow: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
+    --shadow:
+        0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
         0 1px 2px -14.5px rgb(from var(--shadow-color) r g b / 0.15);
-    --shadow-md: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
+    --shadow-md:
+        0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
         0 2px 4px -14.5px rgb(from var(--shadow-color) r g b / 0.15);
-    --shadow-lg: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
+    --shadow-lg:
+        0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
         0 4px 6px -14.5px rgb(from var(--shadow-color) r g b / 0.15);
-    --shadow-xl: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
+    --shadow-xl:
+        0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15),
         0 8px 10px -14.5px rgb(from var(--shadow-color) r g b / 0.15);
     --shadow-2xl: 0 1px 3px -13.5px rgb(from var(--shadow-color) r g b / 0.15);
 }

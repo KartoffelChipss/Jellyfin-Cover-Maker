@@ -1,6 +1,6 @@
-import { ImageIcon, ImagePlus } from "lucide-preact";
-import type { FC } from "preact/compat";
-import { useState, useCallback, useRef, useEffect } from "preact/hooks";
+import { ImageIcon, ImagePlus } from 'lucide-preact';
+import type { FC } from 'preact/compat';
+import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
 
 type DragAndDropFileInputProps = {
     onImageUpload: (e: Event) => void;
@@ -34,7 +34,7 @@ const FileInput: FC<DragAndDropFileInputProps> = ({ onImageUpload }) => {
                 dataTransfer.items.add(file);
                 inputRef.current.files = dataTransfer.files;
 
-                const event = new Event("change", { bubbles: true });
+                const event = new Event('change', { bubbles: true });
                 inputRef.current.dispatchEvent(event);
             }
 
@@ -57,14 +57,14 @@ const FileInput: FC<DragAndDropFileInputProps> = ({ onImageUpload }) => {
     };
 
     useEffect(() => {
-        window.addEventListener("dragover", handleGlobalDragOver);
-        window.addEventListener("dragleave", handleGlobalDragLeave);
-        window.addEventListener("drop", handleGlobalDrop);
+        window.addEventListener('dragover', handleGlobalDragOver);
+        window.addEventListener('dragleave', handleGlobalDragLeave);
+        window.addEventListener('drop', handleGlobalDrop);
 
         return () => {
-            window.removeEventListener("dragover", handleGlobalDragOver);
-            window.removeEventListener("dragleave", handleGlobalDragLeave);
-            window.removeEventListener("drop", handleGlobalDrop);
+            window.removeEventListener('dragover', handleGlobalDragOver);
+            window.removeEventListener('dragleave', handleGlobalDragLeave);
+            window.removeEventListener('drop', handleGlobalDrop);
         };
     }, [handleGlobalDragOver, handleGlobalDragLeave, handleGlobalDrop]);
 
@@ -72,8 +72,8 @@ const FileInput: FC<DragAndDropFileInputProps> = ({ onImageUpload }) => {
         <>
             <label
                 class={
-                    "relative grow w-full rounded-md border border-input border-solid flex flex-col items-center justify-center gap-2 p-4 cursor-pointer transition-colors " +
-                    (isDragging ? " border-primary border-dashed" : "")
+                    'relative grow w-full rounded-md border border-input border-solid flex flex-col items-center justify-center gap-2 p-4 cursor-pointer transition-colors ' +
+                    (isDragging ? ' border-primary border-dashed' : '')
                 }
                 htmlFor="file-input"
             >
@@ -108,9 +108,7 @@ const FileInput: FC<DragAndDropFileInputProps> = ({ onImageUpload }) => {
                 <div class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center pointer-events-none border-primary border-4 rounded-md">
                     <div class="card flex flex-row items-center gap-3 p-6 text-center">
                         <ImagePlus class="w-6 h-6" />
-                        <p class="text-lg font-medium">
-                            Drop image anywhere to use
-                        </p>
+                        <p class="text-lg font-medium">Drop image anywhere to use</p>
                     </div>
                 </div>
             )}

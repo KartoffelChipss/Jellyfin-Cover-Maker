@@ -122,8 +122,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                         textBaseline === 'top'
                             ? 'middle'
                             : textBaseline === 'middle'
-                            ? 'bottom'
-                            : 'top';
+                              ? 'bottom'
+                              : 'top';
                     setTextBaseline(nextBaseline);
                 }}
             >
