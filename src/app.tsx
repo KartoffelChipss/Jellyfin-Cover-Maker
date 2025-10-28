@@ -3,7 +3,7 @@ import Header from './components/Header';
 import OptionsDisplay from './components/OptionsDisplay';
 import WebFont from 'webfontloader';
 import Modal from './components/Modal';
-import { Download } from 'lucide-preact';
+import { Download, Loader2 } from 'lucide-preact';
 
 export type TextAlign = 'left' | 'center' | 'right';
 export type TextBaseLine = 'top' | 'middle' | 'bottom';
@@ -72,6 +72,7 @@ export default function App() {
     const [textAlign, setTextAlign] = useState<TextAlign>('center');
     const [textBaseline, setTextBaseline] = useState<TextBaseLine>('middle');
     const [textPadding, setTextPadding] = useState(DEFAULT_TEXT_PADDING);
+    const [fontLoading, setFontLoading] = useState(false);
 
     const getCanvasWidth = () => {
         if (imageType === 'custom')
@@ -314,9 +315,16 @@ export default function App() {
                 families: [fontName + ':400,700'],
             },
             active: () => {
+                setFontLoading(false);
                 if (image) {
                     renderCanvas(canvasRef.current, image, title);
                 }
+            },
+            loading() {
+                setFontLoading(true);
+            },
+            inactive() {
+                setFontLoading(false);
             },
         });
     }, [fontName]);
@@ -369,7 +377,10 @@ export default function App() {
                     defaultBgDim={DEFAULT_BG_DIM}
                     downloadImage={() => setDownloadModalOpen(true)}
                     font={fontName}
-                    setFont={setFontName}
+                    setFont={(fontName) => {
+                        setFontName(fontName);
+                        setFontLoading(true);
+                    }}
                     textColor={textColor}
                     setTextColor={setTextColor}
                     dimColor={dimColor}
@@ -385,12 +396,25 @@ export default function App() {
 
                 <div
                     className={
-                        'flex items-center justify-center grow max-h-[500px] ' +
+                        'relative flex items-center justify-center grow max-h-[500px] ' +
                         (imageType === 'poster' ? 'flex-col' : '')
                     }
                 >
+                    {fontLoading && (
+                        <div
+                            class="absolute z-10 flex items-center justify-center w-full h-full rounded-md"
+                            style={{
+                                maxHeight: '500px',
+                                aspectRatio: `${getCanvasWidth()} / ${getCanvasHeight()}`,
+                            }}
+                        >
+                            <div className={'bg-background/90 p-10 rounded-2xl'}>
+                                <Loader2 class="animate-spin text-muted-foreground h-15 w-15" />
+                            </div>
+                        </div>
+                    )}
                     <canvas
-                        className={'rounded-md border border-input border-solid'}
+                        className={'relative rounded-md border border-input border-solid'}
                         style={{
                             maxHeight: '500px',
                             aspectRatio: `${getCanvasWidth()} / ${getCanvasHeight()}`,
