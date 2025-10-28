@@ -8,6 +8,8 @@ import { Download, Loader2 } from 'lucide-preact';
 export type TextAlign = 'left' | 'center' | 'right';
 export type TextBaseLine = 'top' | 'middle' | 'bottom';
 
+const FONT_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
 const hexToRgb = (hex: string): [number, number, number] => {
     const match = hex.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
     if (!match) return [0, 0, 0];
@@ -73,6 +75,7 @@ export default function App() {
     const [textBaseline, setTextBaseline] = useState<TextBaseLine>('middle');
     const [textPadding, setTextPadding] = useState(DEFAULT_TEXT_PADDING);
     const [fontLoading, setFontLoading] = useState(false);
+    const [fontWeight, setFontWeight] = useState<number>(700);
 
     const getCanvasWidth = () => {
         if (imageType === 'custom')
@@ -251,13 +254,13 @@ export default function App() {
 
         // make sure font is loaded
         try {
-            await document.fonts.load(`700 ${textSize}px "${fontName}"`);
+            await document.fonts.load(`${fontWeight} ${textSize}px "${fontName}"`);
             await document.fonts.ready; // extra safety for all faces
         } catch (_) {
             // ignore
         }
 
-        ctx.font = `bold ${textSize}px "${fontName}", sans-serif`;
+        ctx.font = `${fontWeight} ${textSize}px "${fontName}", sans-serif`;
         ctx.fillStyle = textColor;
         ctx.textAlign = textAlign;
         ctx.textBaseline = textBaseline;
@@ -299,6 +302,7 @@ export default function App() {
         bgDim,
         imageType,
         fontName,
+        fontWeight,
         textColor,
         dimColor,
         textAlign,
@@ -310,18 +314,20 @@ export default function App() {
 
     useEffect(() => {
         if (!fontName) return;
+        const familyStr = `${fontName}:${FONT_WEIGHTS.join(',')}`;
+
         WebFont.load({
             google: {
-                families: [fontName + ':400,700'],
+                families: [familyStr],
+            },
+            loading() {
+                setFontLoading(true);
             },
             active: () => {
                 setFontLoading(false);
                 if (image) {
                     renderCanvas(canvasRef.current, image, title);
                 }
-            },
-            loading() {
-                setFontLoading(true);
             },
             inactive() {
                 setFontLoading(false);
@@ -381,6 +387,9 @@ export default function App() {
                         setFontName(fontName);
                         setFontLoading(true);
                     }}
+                    fontWeights={FONT_WEIGHTS}
+                    fontWeight={fontWeight}
+                    setFontWeight={setFontWeight}
                     textColor={textColor}
                     setTextColor={setTextColor}
                     dimColor={dimColor}

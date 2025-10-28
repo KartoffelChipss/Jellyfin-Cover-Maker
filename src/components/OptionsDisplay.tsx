@@ -28,6 +28,9 @@ interface OptionsDisplayProps {
     defaultBgDim: number;
     font: string;
     setFont: (font: string) => void;
+    fontWeights: number[];
+    fontWeight: number;
+    setFontWeight: (weight: number) => void;
     textColor: string;
     setTextColor: (color: string) => void;
     dimColor: string;
@@ -60,6 +63,9 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
     defaultBgDim,
     font,
     setFont,
+    fontWeights,
+    fontWeight,
+    setFontWeight,
     textColor,
     setTextColor,
     dimColor,
@@ -122,8 +128,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                         textBaseline === 'top'
                             ? 'middle'
                             : textBaseline === 'middle'
-                              ? 'bottom'
-                              : 'top';
+                            ? 'bottom'
+                            : 'top';
                     setTextBaseline(nextBaseline);
                 }}
             >
@@ -138,6 +144,26 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                     {textBaseline === 'bottom' && <BaselineBottom />}
                 </button>
             </label>
+        </div>
+
+        <div>
+            <span className="text-xs text-muted-foreground">Weight:</span>
+            <div className="flex justify-evenly flex-wrap">
+                {fontWeights.map((w: number) => (
+                    <button
+                        key={w}
+                        onClick={() => setFontWeight(w)}
+                        className={`px-2 py-1 text-sm rounded-md border flex-1 text-center m-1 transition
+          ${
+              fontWeight === w
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-background text-foreground border-muted hover:bg-accent hover:text-accent-foreground'
+          }`}
+                    >
+                        {w}
+                    </button>
+                ))}
+            </div>
         </div>
 
         <div className="flex flex-col">
