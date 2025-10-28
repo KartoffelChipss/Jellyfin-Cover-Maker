@@ -113,7 +113,7 @@ const SliderInput: FC<SliderInputProps> = ({
             )}
 
             {disabled && (
-                <div className="absolute inset-0 bg-black opacity-50 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-background/80 pointer-events-none"></div>
             )}
         </div>
     );

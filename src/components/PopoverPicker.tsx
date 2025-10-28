@@ -9,9 +9,15 @@ interface PopoverPickerProps {
     color: string;
     onChange: (color: string) => void;
     defaultColor: string;
+    align?: 'top' | 'bottom';
 }
 
-const PopoverPicker: FC<PopoverPickerProps> = ({ color, onChange, defaultColor }) => {
+const PopoverPicker: FC<PopoverPickerProps> = ({
+    color,
+    onChange,
+    defaultColor,
+    align = 'top',
+}) => {
     const popover = useRef<HTMLDivElement>(null);
     const [isOpen, toggle] = useState(false);
 
@@ -28,7 +34,9 @@ const PopoverPicker: FC<PopoverPickerProps> = ({ color, onChange, defaultColor }
 
             {isOpen && (
                 <div
-                    className="absolute flex flex-col items-center left-0 bottom-11 rounded-md bg-accent m-0 border border-input border-solid"
+                    className={`absolute flex flex-col items-center right-0 ${
+                        align === 'top' ? 'top-11' : 'bottom-11'
+                    } rounded-md bg-accent m-0 border border-input border-solid z-20`}
                     ref={popover}
                 >
                     <div className="flex items-center w-1000 max-w-52">
