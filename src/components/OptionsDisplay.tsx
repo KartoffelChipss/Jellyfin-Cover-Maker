@@ -318,6 +318,15 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                 isExpanded={expandedId === 3}
                 onToggle={() => setExpandedId(expandedId === 3 ? null : 3)}
             >
+                <div className="flex flex-col grow">
+                    <span className="text-sm text-muted-foreground mb-1">Dim color:</span>
+                    <PopoverPicker
+                        color={dimColor}
+                        onChange={setDimColor}
+                        defaultColor="#000000"
+                        align="bottom"
+                    />
+                </div>
                 <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground mb-1">Background Dim:</span>
                     <SliderInput
@@ -330,16 +339,6 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                         displayValue
                         decimalPlaces={2}
                         defaultValue={defaultBgDim}
-                    />
-                </div>
-
-                <div className="flex flex-col grow">
-                    <span className="text-sm text-muted-foreground mb-1">Dim color:</span>
-                    <PopoverPicker
-                        color={dimColor}
-                        onChange={setDimColor}
-                        defaultColor="#000000"
-                        align="bottom"
                     />
                 </div>
             </OptionsSection>
