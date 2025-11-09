@@ -221,8 +221,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                                     textAlign === 'left'
                                         ? 'center'
                                         : textAlign === 'center'
-                                        ? 'right'
-                                        : 'left';
+                                          ? 'right'
+                                          : 'left';
                                 setTextAlign(nextAlign);
                             }}
                         >
@@ -260,8 +260,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                                     textBaseline === 'top'
                                         ? 'middle'
                                         : textBaseline === 'middle'
-                                        ? 'bottom'
-                                        : 'top';
+                                          ? 'bottom'
+                                          : 'top';
                                 setTextBaseline(nextBaseline);
                             }}
                         >

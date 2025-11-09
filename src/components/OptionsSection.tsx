@@ -72,6 +72,7 @@ const OptionsSection = ({ children, icon, title, isExpanded, onToggle }: Options
                 className="px-1 flex flex-col gap-3"
             >
                 {children}
+                <div class={'h-4 min-h-4w-full'} />
             </div>
         </div>
     );
