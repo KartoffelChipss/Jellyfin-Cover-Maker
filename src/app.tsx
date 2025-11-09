@@ -283,11 +283,38 @@ export default function App() {
 
     const downloadImage = async () => {
         if (!image) return;
+
         const exportCanvas = document.createElement('canvas');
         await renderCanvas(exportCanvas, image, title, downloadScale);
+
         const link = document.createElement('a');
-        link.download = `jellyfin-cover-${formatTitleForFileName(title)}.png`;
+        const filename = `jellyfin-cover-${formatTitleForFileName(title)}.png`;
+        link.download = filename;
         link.href = exportCanvas.toDataURL('image/png');
+
+        try {
+            const payload = {
+                width: downloadWidth,
+                height: downloadHeight,
+                scale: downloadScale,
+                image_type: imageType,
+                title: title,
+            };
+
+            if (typeof (window as any).umami.track === 'function') {
+                try {
+                    (window as any).umami.track('poster_download', payload);
+                } catch (err) {
+                    (window as any).umami && (window as any).umami('poster_download');
+                }
+            } else {
+                // no umami loaded
+                console.warn('Umami not loaded, cannot track poster_download event');
+            }
+        } catch (e) {
+            console.warn('Umami tracking failed', e);
+        }
+
         link.click();
     };
 
