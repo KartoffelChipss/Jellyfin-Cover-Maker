@@ -177,7 +177,8 @@ export default function App() {
         }
         lines.push(currentLine);
 
-        const totalHeight = lines.length * lineHeight;
+        const metrics = ctx.measureText('Mg');
+        const totalHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent + (lines.length - 1) * lineHeight;
 
         const padding = getCanvasHeight() * textPadding;
         let y: number;
