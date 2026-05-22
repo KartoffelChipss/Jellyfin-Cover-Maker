@@ -174,8 +174,8 @@ const OptionsDisplay: FC<OptionsDisplayProps> = ({
                         <select
                             className="select w-full"
                             value={fontWeight}
-                            onInput={(w) => {
-                                const wNum = Number(w);
+                            onChange={(w) => {
+                                const wNum = Number(w.currentTarget.value);
                                 if (isNaN(wNum)) return;
                                 setFontWeight(wNum);
                             }}
